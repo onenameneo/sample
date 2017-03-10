@@ -38,6 +38,7 @@ class UsersController extends Controller
             'password' => bcrypt($request->password)
         ]);
 
+        Auth::login($user);
         session()->flash('success', '注册成功，欢迎加入我的Laravel网站');
         return redirect()->route('users.show', [$user]);
 
