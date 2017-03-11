@@ -47,6 +47,10 @@ p {
   line-height: 1.7em;
 }
 
+.alert-status {
+  @extend .alert-info;
+}
+
 /* header */
 
 .navbar-inverse {
@@ -162,7 +166,7 @@ section.user_info {
 
 input, textarea, select, .uneditable-input {
   border: 1px solid #bbb;
-  width: 100%;
+  //width: 100%;
   margin-bottom: 15px;
 }
 

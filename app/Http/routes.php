@@ -15,15 +15,19 @@
     return view('welcome');
 });*/
 
-Route::get('/', 'StaticPagesController@home')->name('home');
-Route::get('/help', 'StaticPagesController@help')->name('help');
-Route::get('/about', 'StaticPagesController@about')->name('about');
+get('/', 'StaticPagesController@home')->name('home');
+get('/help', 'StaticPagesController@help')->name('help');
+get('/about', 'StaticPagesController@about')->name('about');
 
-Route::get('/signup', 'UsersController@create')->name('signup');
-Route::resource('/users', 'UsersController');
-Route::get('/signup/confirm/{token}', 'UsersController@confirmEmail')->name('confirm_email');
+get('/signup', 'UsersController@create')->name('signup');
+resource('/users', 'UsersController');
+get('/signup/confirm/{token}', 'UsersController@confirmEmail')->name('confirm_email');
 
+get('/login', 'SessionsController@create')->name('login');
+post('/login', 'SessionsController@store')->name('login');
+delete('/logout', 'SessionsController@destroy')->name('logout');
 
-Route::get('/login', 'SessionsController@create')->name('login');
-Route::post('/login', 'SessionsController@store')->name('login');
-Route::delete('/logout', 'SessionsController@destroy')->name('logout');
+get('password/email', 'Auth\PasswordController@getEmail')->name('password.reset');
+post('password/email', 'Auth\PasswordController@postEmail')->name('password.reset');
+get('password/reset/{token}', 'Auth\PasswordController@getReset')->name('password.edit');
+post('password/reset', 'Auth\PasswordController@postReset')->name('password.update');
