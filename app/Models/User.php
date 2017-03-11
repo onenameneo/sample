@@ -47,6 +47,10 @@ class User extends Model implements AuthenticatableContract,
         });
     }
 
+    public function statuses()
+    {
+        return $this->hasMany(Status::class);
+    }
 
     /**
      * 利用gravatar创建头像
@@ -60,6 +64,11 @@ class User extends Model implements AuthenticatableContract,
         return "http://www.gravatar.com/avatar/$hash?s=$size";
     }
 
+    public function feed()
+    {
+        return $this->statuses()
+                    ->orderBy('created_at', 'desc');
+    }
 
 
 }
