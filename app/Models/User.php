@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
@@ -66,9 +67,53 @@ class User extends Model implements AuthenticatableContract,
 
     public function feed()
     {
-        return $this->statuses()
-                    ->orderBy('created_at', 'desc');
+        $user = Auth::user();
+
+        $users_ids = $user->followings->pluck('id')->toArray();
+
+        array_push($users_ids, $user->id);
+
+        return Status::whereIn('user_id', $users_ids)
+            ->with('user')
+            ->orderBy('created_at', 'desc');
     }
 
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'follower_id');
+    }
+
+    public function followings()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'user_id');
+    }
+
+
+    public function follow($user_id)
+    {
+        if (!is_array($user_id)) {
+            $user_id = compact('user_id');
+        }
+
+        return $this->followings()->sync($user_id, false);
+    }
+
+
+    public function unfollow($user_id)
+    {
+        if (!is_array($user_id)) {
+            $user_id = compact('user_id');
+        }
+
+        return $this->followings()->detach($user_id);
+    }
+
+
+    public function isFollowing($user_id)
+    {
+//        return $this->followings()->contains($user_id);
+        return $this->followings->contains($user_id);
+
+    }
 
 }
